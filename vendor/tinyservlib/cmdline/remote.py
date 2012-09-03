@@ -45,6 +45,28 @@ def cmd_apps__destroy(args):
 
 cmd_apps__destroy_args = cmd_apps__create_args
 
+def all_processes():
+    for name in tinyserv.projects:
+        process = tinyserv.projects[name].process
+        if process:
+            yield process
+
+def cmd_startup(args):
+    """
+    Start all apps.
+    """
+    
+    for process in all_processes():
+        process.start()
+
+def cmd_shutdown(args):
+    """
+    Stop all apps.
+    """
+
+    for process in all_processes():
+        process.stop()
+
 def run():
     global tinyserv
     
