@@ -1,0 +1,14 @@
+#! /usr/bin/env python
+
+import os
+import sys
+
+ROOT = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+path = lambda *x: os.path.join(ROOT, *x)
+
+sys.path.append(path('vendor'))
+
+from tinyservlib.cmdline.local import run
+
+if __name__ == '__main__':
+    run()
