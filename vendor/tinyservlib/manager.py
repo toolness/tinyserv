@@ -6,16 +6,7 @@ from distutils.dir_util import mkpath
 
 import ProcessManager
 
-def git(cwd, *args):
-    env = {}
-    if cwd:
-        gitdir = os.path.join(cwd, '.git')
-        if os.path.exists(gitdir):
-            # Not really sure why we have to do this, perhaps it has
-            # something to do w/ the fact that we're calling git from
-            # a non-terminal session or something.
-            env['GIT_DIR'] = gitdir
-    subprocess.check_call(['git'] + list(args), cwd=cwd, env=env)
+from .git_utils import git
     
 def writefile(filename, contents, mode=0644):
     f = open(filename, 'w')
