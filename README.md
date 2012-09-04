@@ -114,6 +114,11 @@ how it's used:
       $ curl http://toolness.org:11002
         -> 'foo is blargey'
 
+    Checking app log.
+
+      $ tinyserv logs
+        -> "Launching node with args ['node', 'app.j..."
+    
     Shutting down app.
 
       $ tinyserv apps:destroy
