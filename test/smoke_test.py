@@ -76,6 +76,10 @@ def equals(a, b):
     if a != b:
         raise AssertionError("%s != %s" % (repr(a), repr(b)))
 
+def contains(a, b):
+    if not b in a:
+        raise AssertionError("%s is not in %s" % (repr(b), repr(a)))
+
 def describe(msg):
     print
     print msg
@@ -132,6 +136,10 @@ def main():
     run("tinyserv config:set foo=blargey")
     equals(readurl(url), "foo is blargey")
 
+    describe("Checking app log.")
+
+    contains(run("tinyserv logs"), "listening on port %d\n" % config['port'])
+    
     describe("Shutting down app.")
     
     run("tinyserv apps:destroy")
