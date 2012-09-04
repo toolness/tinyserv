@@ -7,6 +7,11 @@ from .run import make_run
 
 tinyserv = None
 
+def ExistingAppName(name):
+    if name not in tinyserv.projects:
+        raise ValueError("app %s does not exist" % name)
+    return name
+
 def cmd_git__post_update(args):
     """
     Called by git post-update hooks to push a new deployment.
@@ -45,7 +50,8 @@ def cmd_apps__destroy(args):
 
     project = tinyserv.destroy_project(args.name)
 
-cmd_apps__destroy_args = cmd_apps__create_args
+def cmd_apps__destroy_args(parser):
+    parser.add_argument('name', type=ExistingAppName)
 
 def cmd_ps(args):
     """
@@ -54,7 +60,7 @@ def cmd_ps(args):
     
     tinyserv.projects[args.name].process.status()
 
-cmd_ps_args = cmd_apps__create_args
+cmd_ps_args = cmd_apps__destroy_args
 
 def cmd_config__set(args):
     """
@@ -64,7 +70,7 @@ def cmd_config__set(args):
     settings = json.load(sys.stdin)
     tinyserv.projects[args.name].update_config(settings)
 
-cmd_config__set_args = cmd_apps__create_args
+cmd_config__set_args = cmd_apps__destroy_args
 
 def cmd_config(args):
     """
@@ -75,7 +81,7 @@ def cmd_config(args):
                      sort_keys=True,
                      indent=2)
 
-cmd_config_args = cmd_apps__create_args
+cmd_config_args = cmd_apps__destroy_args
 
 def all_processes():
     for name in tinyserv.projects:
