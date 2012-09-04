@@ -1,4 +1,6 @@
 import os
+import sys
+import json
 
 from ..manager import TinyservManager
 from .run import make_run
@@ -53,6 +55,16 @@ def cmd_ps(args):
     tinyserv.projects[args.name].process.status()
 
 cmd_ps_args = cmd_apps__create_args
+
+def cmd_config__set(args):
+    """
+    Update environment via stdin JSON blob.
+    """
+    
+    settings = json.load(sys.stdin)
+    tinyserv.projects[args.name].update_config(settings)
+
+cmd_config__set_args = cmd_apps__create_args
 
 def all_processes():
     for name in tinyserv.projects:

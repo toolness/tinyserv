@@ -62,6 +62,21 @@ def cmd_logs_args(parser):
     parser.add_argument('-t', '--tail', action='store_true',
                         help='continually stream logs')
 
+def cmd_config__set(args):
+    """
+    Set environment keys and values.
+    """
+
+    settings = {}
+    for pair in args.keyvalues:
+        key, value = pair.split("=", 1)
+        settings[key] = value
+    remote.update_config(_get_current_project_name(), settings)
+
+def cmd_config__set_args(parser):
+    parser.add_argument('keyvalues', nargs='*',
+                        help='KEY=VALUE pairs to set')
+
 def run():
     global remote
     

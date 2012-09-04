@@ -1,4 +1,5 @@
 import sys
+import json
 import subprocess
 
 class TinyservClient(object):
@@ -28,6 +29,17 @@ class TinyservClient(object):
                 output=output
                 )
         return output
+
+    def update_config(self, name, settings):
+        ssh_cmd = 'tinyserv-remote config:set %s' % name
+        fullcmd = ['ssh', self.host, ssh_cmd]
+        popen = subprocess.Popen(fullcmd, stdin=subprocess.PIPE)
+        popen.communicate(json.dumps(settings))
+        if popen.wait():
+            raise subprocess.CalledProcessError(
+                returncode=popen.returncode,
+                cmd=' '.join(fullcmd)
+                )
 
     def show_status(self, name):
         self._ssh('tinyserv-remote ps %s' % name)

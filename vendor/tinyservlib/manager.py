@@ -68,8 +68,10 @@ class Project(object):
         if not self.release.get('port'):
             self.release['port'] = self.tinyserv.find_unused_port()
         
-        json.dump(self.release, open(self.releasefile, 'w'))
+        self._save_release()
         
+    def _save_release(self):
+        json.dump(self.release, open(self.releasefile, 'w'))
         self._on_release_updated()
         
     def _on_release_updated(self):
@@ -77,7 +79,9 @@ class Project(object):
             return
         
         args = self.release['cmdline'].split()
-
+        env = {}
+        env.update(self.release.get('env', {}))
+        env.update({'PORT': str(self.release['port'])})
         self.process = ProcessManager.Process(
             name=self.name,
             desc=self.release.get('description') or "project %s" % self.name,
@@ -85,14 +89,23 @@ class Project(object):
             args=args[1:],
             workingDir=self.builddir,
             logFile=self.logfile,
-            env={'PORT': str(self.release['port'])}
+            env=env
             )
 
         ProcessManager.set(self.process)
         
-        # 6. update tinyserv/exports directory.
-        # 7. start processmanager task
-        # 8. restart/update proxy server if necessary
+    def update_config(self, settings):
+        if self.process:
+            self.process.stop()
+        
+        if not self.release.get('env'):
+            self.release['env'] = {}
+        self.release['env'].update(settings)
+        self._save_release()
+        print "Configuration updated."
+        
+        if self.process:
+            self.process.start()
 
     def update_build(self):
         if self.process:
