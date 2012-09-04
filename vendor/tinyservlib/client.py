@@ -29,6 +29,17 @@ class TinyservClient(object):
                 )
         return output
 
+    def show_log(self, name, num, tail):
+        try:
+            logfile = "-n %d $TINYSERV_ROOT/logs/%s.log" % (num, name)
+            if tail:
+                logfile = "-f " + logfile
+            ssh_cmd = "tail %s" % logfile
+            subprocess.call(['ssh', self.host, ssh_cmd])
+        except KeyboardInterrupt:
+            if not tail:
+                raise
+
     def destroy_project(self, name):
         self._ssh('tinyserv-remote apps:destroy %s' % name)
 

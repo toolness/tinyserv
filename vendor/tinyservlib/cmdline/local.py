@@ -21,15 +21,19 @@ def cmd_apps__create(args):
 def cmd_apps__create_args(parser):
     parser.add_argument('name', nargs='?', default=None)
 
+def _get_current_project_name():
+    # This is semi-fragile and always assumes the last part of the URL
+    # is the project name.
+    
+    return get_push_url(remote='tinyserv').split('/')[-1]
+
 def cmd_apps__destroy(args):
     """
     Destroy an existing app.
     """
     
     if args.name is None:
-        # This is semi-fragile and always assumes the last part of the URL
-        # is the project name.
-        args.name = get_push_url(remote='tinyserv').split('/')[-1]
+        args.name = _get_current_project_name()
 
     print "Destroying project %s..." % args.name
     remote.destroy_project(args.name)
@@ -37,6 +41,19 @@ def cmd_apps__destroy(args):
     git(None, 'remote', 'rm', 'tinyserv')
 
 cmd_apps__destroy_args = cmd_apps__create_args
+
+def cmd_logs(args):
+    """
+    Show log for app.
+    """
+
+    remote.show_log(_get_current_project_name(), num=args.num, tail=args.tail)
+
+def cmd_logs_args(parser):
+    parser.add_argument('-n', '--num', type=int, default=5,
+                        help='number of lines to display')
+    parser.add_argument('-t', '--tail', action='store_true',
+                        help='continually stream logs')
 
 def run():
     global remote
