@@ -6,7 +6,7 @@ from distutils.dir_util import mkpath
 
 import ProcessManager
 
-from .git_utils import git
+from .git_utils import git, get_heads, get_head_ref
     
 def writefile(filename, contents, mode=0644):
     f = open(filename, 'w')
@@ -59,11 +59,10 @@ class Project(object):
             raise Exception("Only 1-line procfiles are currently supported.")
         
         cmdline = procfile[0].split(':')[1].strip()
-        headfile = self._buildpath('.git', 'refs', 'heads', 'master')
-
+        
         self.release['cmdline'] = cmdline
         self.release['id'] = time.asctime()
-        self.release['commit'] = open(headfile).read().strip()
+        self.release['commit'] = get_head_ref(self.builddir)
         self.release['description'] = package.get('description')
 
         if not self.release.get('port'):
@@ -100,7 +99,11 @@ class Project(object):
             self.process.stop()
         
         if not os.path.exists(self.builddir):
-            git(None, 'clone', self.repodir, self.builddir)
+            # TODO: What if there are multiple branches? There shouldn't
+            # be, but who knows...
+            branch = get_heads(self.repodir)[0]
+            git(None, 'clone', '--branch', branch,
+                self.repodir, self.builddir)
         
         git(self.builddir, 'pull')
         
