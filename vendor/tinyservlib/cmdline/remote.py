@@ -45,6 +45,15 @@ def cmd_apps__destroy(args):
 
 cmd_apps__destroy_args = cmd_apps__create_args
 
+def cmd_ps(args):
+    """
+    Show process status for an app.
+    """
+    
+    tinyserv.projects[args.name].process.status()
+
+cmd_ps_args = cmd_apps__create_args
+
 def all_processes():
     for name in tinyserv.projects:
         process = tinyserv.projects[name].process

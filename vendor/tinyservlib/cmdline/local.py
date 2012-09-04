@@ -42,6 +42,13 @@ def cmd_apps__destroy(args):
 
 cmd_apps__destroy_args = cmd_apps__create_args
 
+def cmd_ps(args):
+    """
+    Show process status for app.
+    """
+
+    remote.show_status(_get_current_project_name())
+
 def cmd_logs(args):
     """
     Show log for app.
