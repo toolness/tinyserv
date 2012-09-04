@@ -62,6 +62,13 @@ def cmd_logs_args(parser):
     parser.add_argument('-t', '--tail', action='store_true',
                         help='continually stream logs')
 
+def cmd_config(args):
+    """
+    Show app environment settings.
+    """
+    
+    remote.show_config(_get_current_project_name())
+
 def cmd_config__set(args):
     """
     Set environment keys and values.

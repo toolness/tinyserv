@@ -61,7 +61,6 @@ class Project(object):
         cmdline = procfile[0].split(':')[1].strip()
         
         self.release['cmdline'] = cmdline
-        self.release['id'] = time.asctime()
         self.release['commit'] = get_head_ref(self.builddir)
         self.release['description'] = package.get('description')
 
@@ -71,6 +70,7 @@ class Project(object):
         self._save_release()
         
     def _save_release(self):
+        self.release['id'] = time.asctime()
         json.dump(self.release, open(self.releasefile, 'w'))
         self._on_release_updated()
         

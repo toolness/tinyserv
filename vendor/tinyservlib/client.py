@@ -41,6 +41,9 @@ class TinyservClient(object):
                 cmd=' '.join(fullcmd)
                 )
 
+    def show_config(self, name):
+        self._ssh('tinyserv-remote config %s' % name)
+
     def show_status(self, name):
         self._ssh('tinyserv-remote ps %s' % name)
 

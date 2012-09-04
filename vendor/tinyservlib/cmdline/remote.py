@@ -66,6 +66,17 @@ def cmd_config__set(args):
 
 cmd_config__set_args = cmd_apps__create_args
 
+def cmd_config(args):
+    """
+    Show app environment settings.
+    """
+    
+    print json.dumps(tinyserv.projects[args.name].release, 
+                     sort_keys=True,
+                     indent=2)
+
+cmd_config_args = cmd_apps__create_args
+
 def all_processes():
     for name in tinyserv.projects:
         process = tinyserv.projects[name].process
