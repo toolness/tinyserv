@@ -6,6 +6,12 @@ class TinyservClient(object):
     def __init__(self, host):
         self.host = host
     
+    def make_remote_url(self, repodir):
+        if self.host == 'localhost':
+            return repodir
+        else:
+            return '%s:%s' % (self.host, repodir)
+
     def make_remote_cmd(self, cmd):
         if self.host == 'localhost':
             return ['bash', '-c', cmd]
@@ -68,4 +74,4 @@ class TinyservClient(object):
     def create_project(self, name):
         result = self._remote('tinyserv-remote apps:create %s' % name)
         repodir = result.splitlines()[-1].split()[-1].strip()
-        return '%s:%s' % (self.host, repodir)
+        return self.make_remote_url(repodir)

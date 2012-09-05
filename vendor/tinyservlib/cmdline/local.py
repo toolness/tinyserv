@@ -4,7 +4,7 @@ import subprocess
 
 from .run import make_run
 from ..client import TinyservClient
-from ..git_utils import git, get_push_url
+from ..git_utils import git, get_push_url, in_git_repo
 
 remote = None
 
@@ -16,12 +16,17 @@ def cmd_apps__create(args):
     if args.name is None:
         args.name = os.path.basename(os.getcwd())
 
-    if get_push_url('tinyserv') != 'tinyserv':
-        print "This repository is already configured for app '%s'." % \
-              _get_current_project_name()
-        sys.exit(1)
     url = remote.create_project(args.name)
-    git(None, 'remote', 'add', 'tinyserv', url)
+    
+    if in_git_repo():
+        if get_push_url('tinyserv') is None:
+            git(None, 'remote', 'add', 'tinyserv', url)
+            print "Added remote 'tinyserv'."
+        else:
+            print "This repository is already configured for app '%s'." % \
+                  _get_current_project_name()
+    
+    print "Remote repository URL is %s." % url
 
 def cmd_apps__create_args(parser):
     parser.add_argument('name', nargs='?', default=None)
@@ -30,20 +35,28 @@ def _get_current_project_name():
     # This is semi-fragile and always assumes the last part of the URL
     # is the project name.
     
-    return get_push_url(remote='tinyserv').split('/')[-1]
+    push_url = get_push_url(remote='tinyserv')
+    if push_url is not None:
+        return push_url.split('/')[-1]
 
 def cmd_apps__destroy(args):
     """
     Destroy an existing app.
     """
     
-    if args.name is None:
+    if args.name is None and in_git_repo():
         args.name = _get_current_project_name()
+
+    if args.name is None:
+        print "Please provide a project name."
+        sys.exit(1)
 
     print "Destroying project %s..." % args.name
     remote.destroy_project(args.name)
     print "Project %s destroyed." % args.name
-    git(None, 'remote', 'rm', 'tinyserv')
+    if in_git_repo() and _get_current_project_name() == args.name:
+        git(None, 'remote', 'rm', 'tinyserv')
+        print "Removed remote '%s'." % args.name
 
 cmd_apps__destroy_args = cmd_apps__create_args
 

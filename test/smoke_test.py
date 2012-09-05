@@ -86,6 +86,8 @@ def main():
     remote = environ['TINYSERV_REMOTE']
     host = remote.split('@')[-1]
 
+    print "Running smoke test on %s." % host
+    
     describe("Setting up sample 'tinysmoke' repository.")
     
     chdir(ROOT)
