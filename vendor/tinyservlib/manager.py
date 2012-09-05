@@ -171,8 +171,9 @@ class TinyservManager(object):
         return max_port + 1
 
     def create_project(self, name):
-        if name not in self.projects:
-            self.projects[name] = Project(self, name)
+        if name in self.projects:
+            raise ValueError("app '%s' already exists" % name)
+        self.projects[name] = Project(self, name)
         return self.projects[name]
 
     def destroy_project(self, name):
