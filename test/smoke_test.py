@@ -55,7 +55,7 @@ def run(cmd, silent=False):
     contents = subprocess.check_output(cmd, shell=True,
                                        stderr=subprocess.STDOUT)
     if contents:
-        print "    -> %s" % repr(shorten(contents, maxlen=40))
+        prefixed_print("  ", contents)
     return contents
 
 def writefile(filename, contents):
@@ -67,8 +67,12 @@ def writefile(filename, contents):
 def readurl(url):
     print "  $ curl %s" % url
     output = urllib2.urlopen(url).read()
-    print "    -> %s" % repr(output)
+    prefixed_print("  ", output)
     return output
+
+def prefixed_print(prefix, msg):
+    for line in msg.splitlines():
+        print prefix + line
 
 def equals(a, b):
     if a != b:
