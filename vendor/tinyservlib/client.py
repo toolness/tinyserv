@@ -6,8 +6,11 @@ class TinyservClient(object):
     def __init__(self, host):
         self.host = host
     
-    def _ssh(self, cmd, ignore_errors=False):
-        fullcmd = ['ssh', self.host, cmd]
+    def make_remote_cmd(self, cmd):
+        return ['ssh', self.host, cmd]
+
+    def _remote(self, cmd, ignore_errors=False):
+        fullcmd = self.make_remote_cmd(cmd)
         popen = subprocess.Popen(
           fullcmd,
           stdout=subprocess.PIPE,
@@ -31,8 +34,7 @@ class TinyservClient(object):
         return output
 
     def update_config(self, name, settings):
-        ssh_cmd = 'tinyserv-remote config:set %s' % name
-        fullcmd = ['ssh', self.host, ssh_cmd]
+        fullcmd = self.make_remote_cmd('tinyserv-remote config:set %s' % name)
         popen = subprocess.Popen(fullcmd, stdin=subprocess.PIPE)
         popen.communicate(json.dumps(settings))
         if popen.wait():
@@ -42,26 +44,25 @@ class TinyservClient(object):
                 )
 
     def show_config(self, name):
-        self._ssh('tinyserv-remote config %s' % name)
+        self._remote('tinyserv-remote config %s' % name)
 
     def show_status(self, name):
-        self._ssh('tinyserv-remote ps %s' % name)
+        self._remote('tinyserv-remote ps %s' % name)
 
     def show_log(self, name, num, tail):
         try:
             logfile = "-n %d $TINYSERV_ROOT/logs/%s.log" % (num, name)
             if tail:
                 logfile = "-f " + logfile
-            ssh_cmd = "tail %s" % logfile
-            subprocess.call(['ssh', self.host, ssh_cmd])
+            subprocess.call(self.make_remote_cmd("tail %s" % logfile))
         except KeyboardInterrupt:
             if not tail:
                 raise
 
     def destroy_project(self, name):
-        self._ssh('tinyserv-remote apps:destroy %s' % name)
+        self._remote('tinyserv-remote apps:destroy %s' % name)
 
     def create_project(self, name):
-        result = self._ssh('tinyserv-remote apps:create %s' % name)
+        result = self._remote('tinyserv-remote apps:create %s' % name)
         repodir = result.splitlines()[-1].split()[-1].strip()
         return '%s:%s' % (self.host, repodir)
