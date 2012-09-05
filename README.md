@@ -32,8 +32,10 @@ latter is not.
 The `tinyserv` script needs to be on your development machine's `PATH`.
 
 On your development machine, you'll want to define `TINYSERV_REMOTE` to
-point to your server, e.g. `localhost` or `foo@bar.org`. The server will
-be accessed via SSH using the `ssh` command-line tool.
+point to your server, e.g. `foo@bar.org`. The server will generally be 
+accessed via SSH using the `ssh` command-line tool; the exception is
+when `TINYSERV_REMOTE` is `localhost`, in which case `bash` is used to
+perform shell commands directly.
 
 #### Server
 
