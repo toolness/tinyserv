@@ -1,4 +1,5 @@
 import os
+import argparse
 import subprocess
 import json
 import urllib2
@@ -83,6 +84,23 @@ def describe(msg):
     print
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+      '--use-env',
+      action='store_true',
+      help='Use existing TINYSERV_* environment variables.'
+      )
+    args = parser.parse_args()
+    
+    if not args.use_env:
+        tinyserv_bin_path = path.normpath(path.join(ROOT, '..'))
+        environ.update({
+            'TINYSERV_REMOTE': 'localhost',
+            'TINYSERV_ROOT': path.join(ROOT, '.tinyserv'),
+            'TINYSERV_START_PORT': '5000',
+            'PATH': tinyserv_bin_path + path.pathsep + os.environ['PATH']
+            })
+
     remote = environ['TINYSERV_REMOTE']
     host = remote.split('@')[-1]
 
