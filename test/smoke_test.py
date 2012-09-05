@@ -45,12 +45,6 @@ def mkdir(path):
     print "  $ mkdir %s" % path
     os.mkdir(path)
 
-def shorten(contents, maxlen=20):
-    short_contents = contents
-    if len(contents) > maxlen:
-        short_contents = contents[:maxlen] + '...'
-    return short_contents
-
 def run(cmd, silent=False):
     if not silent:
         print "  $ %s" % cmd
@@ -61,7 +55,9 @@ def run(cmd, silent=False):
     return contents
 
 def writefile(filename, contents):
-    print "  $ echo %s > %s" % (repr(shorten(contents)), filename)
+    print "  $ cat <<EOF > %s" % filename
+    prefixed_print("  > ", contents)
+    print "  > EOF"
     f = open(filename, 'w')
     f.write(contents)
     f.close()
@@ -127,7 +123,7 @@ def main():
     mkdir("tinysmoke")
     chdir("tinysmoke")
     run("git init")
-    writefile("package.json", json.dumps(PACKAGE_JSON))
+    writefile("package.json", json.dumps(PACKAGE_JSON, indent=2))
     writefile("Procfile", PROCFILE)
     writefile("app.js", APP_JS)
     run("git add package.json Procfile app.js")
