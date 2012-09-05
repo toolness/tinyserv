@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 
 from .run import make_run
@@ -14,7 +15,11 @@ def cmd_apps__create(args):
     
     if args.name is None:
         args.name = os.path.basename(os.getcwd())
-    
+
+    if get_push_url('tinyserv') != 'tinyserv':
+        print "This repository is already configured for app '%s'." % \
+              _get_current_project_name()
+        sys.exit(1)
     url = remote.create_project(args.name)
     git(None, 'remote', 'add', 'tinyserv', url)
 
