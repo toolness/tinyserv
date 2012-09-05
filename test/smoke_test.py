@@ -12,9 +12,7 @@ PACKAGE_JSON = {
   "version": "0.0.1",
   "author": "Foo <foo@foo.org>",
   "description": "smoke test for tinyserv.",
-  "dependencies": {
-    "express": "2.5.x"
-  },
+  "dependencies": {},
   "engines": {
     "node": "0.8.x",
     "npm": "1.1.x"
@@ -23,14 +21,13 @@ PACKAGE_JSON = {
 }
 
 APP_JS = """\
-var server = require('express').createServer();
 var port = process.env['PORT'];
+var http = require('http');
 
-server.get('/', function(req, res) {
-  res.send('foo is ' + process.env['foo']);
-});
-
-server.listen(port, function() {
+http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.end('foo is ' + process.env['foo']);
+}).listen(port, function() {
   console.log("listening on port " + port);
 });
 """
