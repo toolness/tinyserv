@@ -7,7 +7,10 @@ class TinyservClient(object):
         self.host = host
     
     def make_remote_cmd(self, cmd):
-        return ['ssh', self.host, cmd]
+        if self.host == 'localhost':
+            return ['bash', '-c', cmd]
+        else:
+            return ['ssh', self.host, cmd]
 
     def _remote(self, cmd, ignore_errors=False):
         fullcmd = self.make_remote_cmd(cmd)
