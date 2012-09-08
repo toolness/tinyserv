@@ -58,6 +58,9 @@ class TinyservClient(object):
     def show_status(self, name):
         self._remote('tinyserv-remote ps %s' % name)
 
+    def show_apps(self):
+        self._remote('tinyserv-remote apps')
+
     def show_log(self, name, num, tail):
         try:
             logfile = "-n %d $TINYSERV_ROOT/logs/%s.log" % (num, name)

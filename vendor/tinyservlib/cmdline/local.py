@@ -8,6 +8,13 @@ from ..git_utils import git, get_push_url, in_git_repo
 
 remote = None
 
+def cmd_apps(args):
+    """
+    List existing apps.
+    """
+    
+    remote.show_apps()
+
 def cmd_apps__create(args):
     """
     Create a new app.

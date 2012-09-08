@@ -48,8 +48,13 @@ def mkdir(path):
 def run(cmd, silent=False):
     if not silent:
         print "  $ %s" % cmd
-    contents = subprocess.check_output(cmd, shell=True,
-                                       stderr=subprocess.STDOUT)
+    try:
+        contents = subprocess.check_output(cmd, shell=True,
+                                           stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError, e:
+        if e.output:
+            prefixed_print("  ", e.output)
+        raise
     if contents:
         prefixed_print("  ", contents)
     return contents
@@ -132,6 +137,7 @@ def main():
     describe("Creating tinyserv app on %s." % remote)
 
     run("tinyserv apps:create")
+    contains(run("tinyserv apps").split(), "tinysmoke")
     
     describe("Deploying app by pushing to %s." % remote)
     

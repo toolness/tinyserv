@@ -26,6 +26,14 @@ def cmd_git__post_update(args):
     
     tinyserv.projects[name].update_build()
 
+def cmd_apps(args):
+    """
+    List existing apps.
+    """
+    
+    for project in tinyserv.projects:
+        print project
+
 def cmd_apps__create(args):
     """
     Create an app.
