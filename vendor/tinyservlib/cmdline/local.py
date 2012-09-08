@@ -94,6 +94,20 @@ def cmd_config(args):
     
     remote.show_config(_get_current_project_name())
 
+def cmd_config__unset(args):
+    """
+    Clear environment keys.
+    """
+    
+    settings = {}
+    for name in args.keys:
+        settings[name] = ''
+    remote.update_config(_get_current_project_name(), settings)
+
+def cmd_config__unset_args(parser):
+    parser.add_argument('keys', nargs='*',
+                        help='keys to unset')
+
 def cmd_config__set(args):
     """
     Set environment keys and values.

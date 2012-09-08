@@ -101,6 +101,9 @@ class Project(object):
         if not self.release.get('env'):
             self.release['env'] = {}
         self.release['env'].update(settings)
+        for key in self.release['env'].keys():
+            if not self.release['env'][key]:
+                del self.release['env'][key]
         self._save_release()
         print "Configuration updated."
         

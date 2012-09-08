@@ -137,6 +137,9 @@ def main():
     describe("Creating tinyserv app on %s." % remote)
 
     run("tinyserv apps:create")
+    
+    describe("Ensuring app exists.")
+    
     contains(run("tinyserv apps").split(), "tinysmoke")
     
     describe("Deploying app by pushing to %s." % remote)
@@ -160,6 +163,11 @@ def main():
 
     run("tinyserv config:set foo=blargey")
     equals(readurl(url), "foo is blargey")
+
+    describe("Undoing app environment changes.")
+
+    run("tinyserv config:unset foo")
+    equals(readurl(url), "foo is undefined")
 
     describe("Checking app log.")
 
