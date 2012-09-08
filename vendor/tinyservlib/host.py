@@ -80,8 +80,8 @@ class Project(object):
         
         args = self.release['cmdline'].split()
         env = {}
-        env.update(self.release.get('env', {}))
         env.update({'PORT': str(self.release['port'])})
+        env.update(self.release.get('env', {}))
         self.process = ProcessManager.Process(
             name=self.name,
             desc=self.release.get('description') or "project %s" % self.name,
