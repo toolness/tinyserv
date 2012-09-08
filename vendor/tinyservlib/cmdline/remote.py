@@ -2,7 +2,7 @@ import os
 import sys
 import json
 
-from ..manager import TinyservManager
+from ..host import TinyservManager
 from .run import make_run
 
 tinyserv = None
